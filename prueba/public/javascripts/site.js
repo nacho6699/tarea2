@@ -7,7 +7,23 @@ $(function($) {
 		{
 			
 			socket.emit("setnickname",{"nick":$(this).val()});
+			
+			console.log($("#nickname").val());
 		}
+	});
+	//para lista de conectados
+	var getLista=function()
+	{
+		socket.emit("get_lista",{});
+		
+	}
+	socket.on("get_lista",function(lista){
+		html="";
+		for(var i=0;i<lista.length;i++)
+		{
+			html+="<li>"+lista[i].nick+"</li>";
+		}
+		$("#usuarios").html(html);
 	});
 
 	socket.on("setnickname",function(response){
@@ -34,6 +50,8 @@ $(function($) {
 		.done(function(html){
 			$("#content").html(html);
 			enabledchat();
+			getLista();
+
 		})
 		.fail(function(){
 
@@ -44,6 +62,7 @@ $(function($) {
 	}
 	var enabledchat=function()
 	{
+
 		$("#menvio").keydown(function(event){
 			if(event.keyCode==13)
 			{
@@ -54,7 +73,9 @@ $(function($) {
 	}
 
 	socket.on("mensajes",function(response){
+		//$("#usuarios").append("<li>"+$("#nickname").val()+"</li>");
 		console.log(response);
-		$("#mensajes").append("<li>"+response.nick+">"+response.msn+"</li>")
+		$("#mensajes").append("<li>"+response.nick+">"+response.msn+"</li>");
+
 	});
 });
